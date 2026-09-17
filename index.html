@@ -14,7 +14,7 @@ main{max-width:1250px;margin:auto;padding:40px 24px}header{display:flex;justify-
 </head>
 <body><main>
 <header><div><div class="eyebrow">ORBITAL INTELLIGENCE / TELEMETRY</div><h1>小惑星探索コンソール</h1><p>すばる望遠鏡データ解析・リアルタイム監視</p></div><div id="connection" class="badge" data-state="offline" role="status">未接続</div></header>
-<p>MOCK / デモ専用 — 画像取得・AI解析・座標・スコアはすべて架空です。</p>
+<p>独立した実データ探索を準備中 / デモ送信停止。別タスクの候補はこの画面の成果に含めません。</p>
 <form class="setup" id="setup"><label>WebSocket endpoint<input id="endpoint" type="url" required spellcheck="false" aria-label="WebSocket URL"></label><button>接続</button></form>
 <section class="metrics"><div class="metric"><span>受信イベント / この画面</span><strong id="events">0</strong></div><div class="metric"><span>候補検出 / この画面</span><strong id="found">0</strong></div><div class="metric"><span>最終受信</span><strong id="last">--:--:--</strong></div></section>
 <div class="grid"><section class="panel"><h2>解析パイプライン</h2><div class="progress-row"><span>01 / FITS ダウンロード</span><span id="downloadText">0%</span></div><progress id="download" max="100" value="0" aria-label="ダウンロード進捗"></progress><div class="progress-row"><span>02 / AI 解析</span><span id="analyzingText">0%</span></div><progress id="analyzing" max="100" value="0" aria-label="AI解析進捗"></progress><h2>イベントストリーム</h2><div class="log" id="log" tabindex="0" aria-label="受信ログ"><p>AIエンジンからのイベントを待機しています。</p></div></section>
@@ -38,7 +38,7 @@ function addLog(text, kind = "info") {
 }
 function progress(kind, value) { $(kind).value = value; $(kind + "Text").textContent = `${value}%`; }
 function receive(data) {
-  if(data.type !== "event" || data.mock !== true || typeof data.id !== "string" || seen.has(data.id)) return;
+  if(data.type !== "event" || data.mock !== false || typeof data.id !== "string" || seen.has(data.id)) return;
   seen.add(data.id); if(seen.size > 1000) seen.delete(seen.values().next().value);
   lastEvent = Date.now(); status("● 接続中 / データ受信", "online");
   $("events").textContent = ++count; $("last").textContent = new Date().toLocaleTimeString("ja-JP");
