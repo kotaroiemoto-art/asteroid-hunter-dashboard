@@ -14,18 +14,11 @@ main{max-width:1250px;margin:auto;padding:40px 24px}header{display:flex;justify-
 </head>
 <body><main>
 <header><div><div class="eyebrow">ORBITAL INTELLIGENCE / TELEMETRY</div><h1>小惑星探索コンソール</h1><p>すばる望遠鏡データ解析・リアルタイム監視</p></div><div id="connection" class="badge" data-state="offline" role="status">未接続</div></header>
-<p>実画像探索へ移行 / デモ送信停止 — 新発見の確定はまだありません。</p>
-<section class="panel" style="margin-top:20px">
-<h2>実データによる探索結果</h2>
-<p><strong style="color:var(--gold)">未同定候補 1件 / 今回の新規採用候補 0件 / 新発見確定 0件</strong></p>
-<p>すばる望遠鏡HSC・2016年8月1日の6画像を追加検証しました。以前に検出した候補H494370の移動は、静止星による位置補正後も残っています。原FITS・別夜の確認と専門レビューが必要です。</p>
-<p>今回の低速探索で得た1予備検出は、白飛び・画像欠損の影響があるため除外しました。架空のAI信頼度は表示しません。</p>
-<p><a href="research.html" style="color:var(--cyan)">実画像と検証内容を見る →</a></p>
-<p>状態：この検証バッチは完了。常時自動探索は稼働していません。以下はライブ通信の接続状態で、探索の稼働状況とは別です。</p>
-</section><form class="setup" id="setup"><label>WebSocket endpoint<input id="endpoint" type="url" required spellcheck="false" aria-label="WebSocket URL"></label><button>接続</button></form>
-<section class="metrics"><div class="metric"><span>受信イベント / この画面</span><strong id="events">0</strong></div><div class="metric"><span>ライブ候補 / この画面</span><strong id="found">0</strong></div><div class="metric"><span>最終受信</span><strong id="last">--:--:--</strong></div></section>
-<div class="grid"><section class="panel"><h2>解析パイプライン</h2><div class="progress-row"><span>01 / FITS ダウンロード</span><span id="downloadText">0%</span></div><progress id="download" max="100" value="0" aria-label="ダウンロード進捗"></progress><div class="progress-row"><span>02 / AI 解析</span><span id="analyzingText">0%</span></div><progress id="analyzing" max="100" value="0" aria-label="AI解析進捗"></progress><h2>イベントストリーム</h2><div class="log" id="log" tabindex="0" aria-label="受信ログ"><p>実処理の新しいイベントはありません。上の検証記録をご覧ください。</p></div></section>
-<section class="panel"><h2>新しい検証イベント <span class="eyebrow">AWAITING DATA</span></h2><div class="candidates" id="candidates"><p class="empty" id="empty">検出待機中<br>候補の座標とスコアがここに表示されます。</p></div></section></div>
+<p>MOCK / デモ専用 — 画像取得・AI解析・座標・スコアはすべて架空です。</p>
+<form class="setup" id="setup"><label>WebSocket endpoint<input id="endpoint" type="url" required spellcheck="false" aria-label="WebSocket URL"></label><button>接続</button></form>
+<section class="metrics"><div class="metric"><span>受信イベント / この画面</span><strong id="events">0</strong></div><div class="metric"><span>候補検出 / この画面</span><strong id="found">0</strong></div><div class="metric"><span>最終受信</span><strong id="last">--:--:--</strong></div></section>
+<div class="grid"><section class="panel"><h2>解析パイプライン</h2><div class="progress-row"><span>01 / FITS ダウンロード</span><span id="downloadText">0%</span></div><progress id="download" max="100" value="0" aria-label="ダウンロード進捗"></progress><div class="progress-row"><span>02 / AI 解析</span><span id="analyzingText">0%</span></div><progress id="analyzing" max="100" value="0" aria-label="AI解析進捗"></progress><h2>イベントストリーム</h2><div class="log" id="log" tabindex="0" aria-label="受信ログ"><p>AIエンジンからのイベントを待機しています。</p></div></section>
+<section class="panel"><h2>小惑星候補 <span class="eyebrow">SIMULATED</span></h2><div class="candidates" id="candidates"><p class="empty" id="empty">検出待機中<br>候補の座標とスコアがここに表示されます。</p></div></section></div>
 <footer>RA / Dec は度数表記。ログは最新300件、候補は最新50件。切断中の履歴は再送されません。</footer>
 </main><script>
 const DEFAULT_WS_URL = "wss://asteroid-hunter-api.iemon-ai-product.workers.dev/api/stream";
@@ -45,7 +38,7 @@ function addLog(text, kind = "info") {
 }
 function progress(kind, value) { $(kind).value = value; $(kind + "Text").textContent = `${value}%`; }
 function receive(data) {
-  if(data.type !== "event" || data.mock !== false || typeof data.id !== "string" || seen.has(data.id)) return;
+  if(data.type !== "event" || data.mock !== true || typeof data.id !== "string" || seen.has(data.id)) return;
   seen.add(data.id); if(seen.size > 1000) seen.delete(seen.values().next().value);
   lastEvent = Date.now(); status("● 接続中 / データ受信", "online");
   $("events").textContent = ++count; $("last").textContent = new Date().toLocaleTimeString("ja-JP");
